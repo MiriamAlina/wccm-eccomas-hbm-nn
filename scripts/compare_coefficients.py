@@ -1,0 +1,75 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from hbm_nn.aft import compute_aft_solution
+from hbm_nn.fourier_conversion import (convert_cossin_to_comexp,
+                                       convert_comexp_to_cossin)
+from hbm_nn.nn_inference import evaluate_model
+from hbm_nn.error_metrics import compute_error_metrics
+from hbm_nn.plotting import (
+    plot_coefficients_over_iterations,
+    plot_prediction_vs_ground_truth_with_inset,
+    individual_normalized_mse_bar_plot,
+    spider_plot_error_metrics
+)
+
+
+###############################################################################
+# Performance on FRC trajectory
+###############################################################################
+q_frc = np.loadtxt('data/inputs_frc.txt', delimiter=',')
+q_frc_full = np.hstack([np.zeros((q_frc.shape[0], 1)), q_frc[:, 0:1],
+                        np.zeros((q_frc.shape[0], 3)), q_frc[:, 1:3]])
+
+nn_id = '2026-04-16_09-31-57'  # '2026-04-01_11-16-24'
+nn_path = f'models/mlp_jenkins_h3_{nn_id}.pt'
+
+H = 3
+N = 2**6
+kt = 1.0  # Example value, replace with actual
+fc = 1.0  # Example value, replace with actual
+fnl_rel_aft = np.empty((0, 4))
+fnl_rel_nn = np.empty((0, 4))
+for i in range(np.shape(q_frc_full)[0]):
+    q_ce = convert_cossin_to_comexp(q_frc_full[i])
+    fnl_ce = compute_aft_solution(N, H, q_ce, kt, fc)
+    fnl_cs = convert_comexp_to_cossin(fnl_ce, H)
+    fnl_rel_aft = np.vstack([fnl_rel_aft, fnl_cs[[1, 2, 5, 6]]])
+
+    fnl_cs_NN = evaluate_model(nn_id, q_frc[i])
+    fnl_rel_nn = np.vstack([fnl_rel_nn, fnl_cs_NN])
+
+global_metrics_frc, individual_metrics_frc = \
+    compute_error_metrics(fnl_rel_aft, fnl_rel_nn)
+global_metrics_frc_normalized, individual_metrics_frc_normalized = \
+    compute_error_metrics(fnl_rel_aft, fnl_rel_nn, normalize=True)
+
+print('global_metrics_frc:',
+      global_metrics_frc)
+
+print('individual_metrics_frc_normalized:',
+      individual_metrics_frc_normalized)
+
+print('global_metrics_frc_normalized:',
+      global_metrics_frc_normalized)
+
+plot_prediction_vs_ground_truth_with_inset(
+    [fnl_rel_aft],
+    [fnl_rel_nn],
+    figure_name='all_predictions_vs_ground_truths_frc', file_format='pdf',
+    save_figure=False)
+
+plot_coefficients_over_iterations(
+    np.hstack([q_frc[:, 0:1], np.zeros((q_frc.shape[0], 1)), q_frc[:, 1:3]]),
+    fnl_rel_aft,
+    fnl_rel_nn)
+
+
+individual_normalized_mse_bar_plot(individual_metrics_frc_normalized,
+                                   figure_name='error_metrics_bar_frc',
+                                   file_format='pdf', save_figure=False)
+
+spider_plot_error_metrics(global_metrics_frc, global_metrics_frc_normalized,
+                          figure_name='EB1to3_error_metrics_spider',
+                          file_format='pdf', save_figure=False)
+
+plt.show()
