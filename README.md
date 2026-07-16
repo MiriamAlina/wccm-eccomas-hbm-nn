@@ -15,11 +15,11 @@ In this work, we propose a neural network to replace the AFT. The network is tra
 ## Citation
 If you use this code in your research, please cite:
 ```bibtex
-@software{goldack2026duffing_hbm_nn,
+@software{goldack2026wccm-eccomas-hbm-nn,
     author = {Goldack, Miriam},
-    title = {Code for: Learning Duffing-Type Forces for the Harmonic Balance Method Using Neural Networks},
+    title = {Code for: Learning Nonlinear Forces for the Harmonic Balance Method Using Neural Networks},
     year = {2026},
-    url = {https://github.com/MiriamAlina/gamm-duffing-hbm-nn}
+    url = {https://github.com/MiriamAlina/wccm-eccomas-hbm-nn}
 }
 ```
 
