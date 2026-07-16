@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, mark_inset
+from matplotlib.lines import Line2D
 
 
 # Latex text font
@@ -165,6 +166,92 @@ def spider_plot_error_metrics(
     ax.set_ylim(min(values)/3, max(values)*6)
     ax.legend(loc='upper center', bbox_to_anchor=(.5, 1.2), ncol=2)
     plt.tight_layout()
+    if save_figure:
+        plt.savefig(f'figures/{figure_name}.{file_format}',
+                    bbox_inches='tight')
+
+
+def plot_frc_variations(data_list,
+                        freqs,
+                        amps,
+                        variation_value_labels,
+                        fixed_params_labels,
+                        colors,
+                        save_figure=False,
+                        figure_name='frc_variations',
+                        file_format='svg'):
+    """
+    Create a plot showing the variations in frequency response curves (FRCs)
+    for different parameters.
+    Inputs:
+        data_list: List of parameter values for each variation (list of lists)
+        freqs: List of frequency arrays for each variation (list of lists)
+        amps: List of amplitude arrays for each variation (list of lists)
+        variation_labels: Labels for the varying parameters (list of str)
+        variation_value_labels: Labels for the values of the varying
+            parameters (list of lists of str)
+        fixed_params_labels: Labels for the fixed parameters (list of str)
+        colors: Colors for each variation (list of str)
+        save_figure: Flag to save the figure (bool, default=False)
+        figure_name: Name for saving the figure (str, default='frc_variations')
+        file_format: Format for saving the figure (str, default='svg')
+    """
+    plt.figure(figsize=(4, 3))
+    groups = []
+    for i, values in enumerate(data_list):
+        group = [Line2D([], [], linestyle='none',
+                        label=fixed_params_labels[i])]
+        for j, var in enumerate(values):
+            alpha = (j + 1) / len(values)
+            plt.plot(
+                freqs[i][j][0],
+                amps[i][j][0],
+                linestyle='-',
+                color=colors[i],
+                alpha=alpha
+            )
+            plt.plot(
+                freqs[i][j][1],
+                amps[i][j][1],
+                linestyle='',
+                marker='o',
+                markerfacecolor='none',
+                markeredgecolor=colors[i],
+                markersize=3,
+                alpha=alpha
+            )
+            group.append(Line2D([0], [0], color=colors[i], linestyle='-',
+                                alpha=alpha,
+                                label=variation_value_labels[i][j]))
+        groups.append(group)
+
+    plt.grid()
+    plt.xlabel(r'Excitation Frequency $\Omega_{\mathrm{exc}}/' +
+               r'\omega_{\mathrm{eig}}$')
+    plt.ylabel(r'Response Amplitude $q_{\mathrm{exc}} / l_{\mathrm{beam}}$')
+    plt.gca().set_box_aspect(.5)
+
+    method_handles = [Line2D([0], [0], color='k', linestyle='-', label='AFT'),
+                      Line2D([0], [0], color='k', linestyle='', marker='o',
+                             markerfacecolor='none', markeredgecolor='k',
+                             markersize=4, label='NN')]
+    legend_method = plt.legend(handles=method_handles, loc='upper left')
+    plt.gca().add_artist(legend_method)
+
+    n = max(map(len, groups))
+    empty = Line2D([], [], linestyle='none', label='')
+    for group in groups:
+        group += [empty] * (n - len(group))
+    handles = [handle for group in groups for handle in group]
+    plt.legend(
+        handles=handles,
+        ncol=len(groups),
+        loc='upper right',
+        columnspacing=1.5,
+        handlelength=0.7,
+        handletextpad=0.4,
+        bbox_to_anchor=(1.4, -.4),
+    )
     if save_figure:
         plt.savefig(f'figures/{figure_name}.{file_format}',
                     bbox_inches='tight')
