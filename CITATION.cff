@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: Goldack
+  given-names: Miriam
+title: "Code for: Learning Nonlinear Forces for the Harmonic Balance Method Using Neural Networks"
+type: software
+version: 1.0.0
+date-released: 2026-07-16
+url: "https://github.com/MiriamAlina/wccm-eccomas-hbm-nn"
+license: GPL-3.0
+keywords:
+  - harmonic balance method
+  - alternating frequency-time
+  - neural networks
+  - nonlinear structural dynamics
