@@ -1,2 +1,13 @@
 # wccm-eccomas-hbm-nn
-Code accompanying the WCCM ECCOMAS 2026 contribution "Learning Nonlinear Forces for the Harmonic Balance Method Using Neural Networks"
+This code accompanies the conference contribution  
+**"Learning Nonlinear Forces for the Harmonic Balance Method Using Neural Networks"**  
+presented at WCCM ECCOMAS 2026.  
+
+**Authors**  
+Miriam Goldack¹, Johann Groß², Malte Krack², Merten Stender¹  
+¹Cyber-Physical Systems in Mechanical Engineering, Technische Universität Berlin, Germany  
+²Institute of Aircraft Propulsion Systems, University of Stuttgart, Germany  
+
+**Abstract**  
+Damping vibrations through dry friction plays a crucial role in the safety, efficiency, and longevity of turbomachinery. One of the most relevant simulation methods in nonlinear structural dynamics for modeling systems with friction is the Harmonic Balance Method (HBM). It effectively solves the equation of motion in the frequency domain and represents the system response as a truncated Fourier series. The main bottleneck within this method is the Alternating Frequency-Time (AFT) method, which is used as standard for evaluating nonlinear force. The AFT applies an inverse FT transformation (FT) to evaluate the nonlinear force in the time domain and transforms the result back into the frequency domain using a direct FT, which overall is computationally demanding.  
+In this work, we propose a neural network to replace the AFT. The network is trained for a specific type of contact nonlinearity and a fixed number of harmonics. It determines the Fourier coefficients of the nonlinear force given the normalized Fourier coefficients of the displacement without making use of the FT. Through automatic differentiation, the neural network even provides the derivatives of the nonlinear force coefficients with respect to the displacement coefficients, resulting in a more efficient and better-conditioned iterative solution process since the resulting Jacobi matrix can be used directly. Based on proof-of-concept studies considering a smooth cubic spring, we apply the method to a common dry friction element. The results are evaluated both regarding data fit by comparing to the corresponding coefficients computed by the AFT, and regarding the resulting system response obtained by integrating the neural AFT into the classic HBM procedure.
