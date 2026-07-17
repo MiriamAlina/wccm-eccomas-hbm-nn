@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from hbm_nn.aft_nonlinearity import compute_nonlinear_force_coefficients
 from hbm_nn.fourier_conversion import (convert_cossin_to_comexp,
@@ -14,9 +15,15 @@ from hbm_nn.plotting import (
 
 
 # Performance on FRC trajectory -----------------------------------------------
-q_frc = np.loadtxt('data/inputs_frc.txt', delimiter=',')
-q_frc_full = np.hstack([np.zeros((q_frc.shape[0], 1)), q_frc[:, 0:1],
-                        np.zeros((q_frc.shape[0], 3)), q_frc[:, 1:3]])
+q_frc = pd.read_csv('data/frc_inputs_force80_kt10000000_muN106.csv')
+q_frc = q_frc[['a1p', 'a3p', 'b3p']].to_numpy()
+q_frc_full = np.hstack([
+    np.zeros((q_frc.shape[0], 1)),
+    q_frc[:, [0]],
+    np.zeros((q_frc.shape[0], 3)),
+    q_frc[:, [1]],
+    q_frc[:, [2]],
+])
 
 nn_id = '2026-04-16_09-31-57'  # '2026-04-01_11-16-24'
 nn_path = f'models/mlp_jenkins_h3_{nn_id}.pt'

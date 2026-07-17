@@ -151,7 +151,7 @@ dFnl_cs_AFT(IS,:) = -imag(dFnl_AFT(ID,:));
 %% Computation of the Fourier coefficients of the nonlinear forces and the
 % Jacobian using the Neural Network
 NN_id = '2026-04-16_09-31-57';
-[Fnl_NN,dFnl_NN] = HB_nonlinear_forces_NN(NN_id, X, N, H, system.nonlinear_elements);
+[Fnl_NN,dFnl_NN] = HB_nonlinear_forces_NN(NN_id, X, N, H, system);
 Fnl_cs = Fnl_NN;
 dFnl_cs = dFnl_NN;
 
@@ -456,12 +456,12 @@ end
 %% Computation of the Fourier coefficients of the nonlinear forces and the 
 % Jacobian using a Neural Network
 function [F,dF] = ...
-    HB_nonlinear_forces_NN(NN_path, X, ~, H, nonlinear_elements)
+    HB_nonlinear_forces_NN(NN_path, X, ~, H, system)
 
 pyModule = py.importlib.import_module('src.hbm_nn.nn_nonlinearity');
 py.importlib.reload(pyModule);  % might slow down the code
 
-w = nonlinear_elements{1}.force_direction;
+w = system.nonlinear_elements{1}.force_direction;
 W = kron(eye(2*H+1),w);
 coeffs = W'*X(1:end-1);
 
@@ -504,21 +504,26 @@ a1p = ac;
 a3p = a3*c3 - b3*s3;
 b3p = a3*s3 + b3*c3;
 
-k = nonlinear_elements{1}.stiffness;
-fc = nonlinear_elements{1}.friction_limit_force;
+k = system.nonlinear_elements{1}.stiffness;
+fc = system.nonlinear_elements{1}.friction_limit_force;
 scale = k / fc;
 nn_input = scale * [a1p, a3p, b3p];
 
 %% Save nn_input in every iteration to file for debugging
-% persistent isFirstCall
-% if isempty(isFirstCall)
-%     isFirstCall = false;
-%     fid = fopen(sprintf('data/EB1to3_inputs_force80_kt%d_muN%d.txt', k, fc), 'w');
-% else
-%     fid = fopen(sprintf('data/EB1to3_inputs_force80_kt%d_muN%d.txt', k, fc), 'a');
-% end
-% fprintf(fid, '%f,%f,%f\n', nn_input(1), nn_input(2), nn_input(3));
-% fclose(fid);
+%{
+idx_force = find(system.Fex1~=0,1,'first');
+force = system.Fex1(idx_force);
+filename = sprintf('data/frc_inputs_force%d_kt%d_muN%d.csv', force, k, fc);
+T = table(nn_input(1), nn_input(2), nn_input(3), ...
+    'VariableNames', {'a1p','a3p','b3p'});
+persistent isFirstCall
+if isempty(isFirstCall)
+    isFirstCall = false;
+    writetable(T, filename);
+else
+    writetable(T, filename, 'WriteMode', 'append', 'WriteVariableNames', false);
+end
+%}
 
 %% Evaluate the Neural Network
 nn_output = double(pyModule.infer_nonlinear_force_coefficients(NN_path, nn_input));

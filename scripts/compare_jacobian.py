@@ -10,11 +10,16 @@ jac_info = pd.read_csv('data/cond_Om_force80_kt10000000_muN106.csv')
 print('Frobenius norm error average:',
       np.round(np.average(jac_info['fnorm_error']) * 100, 3), '%')
 
-
-# Import data -----------------------------------------------------------------
-q_frc = np.loadtxt('data/inputs_frc.txt', delimiter=',')
-q_frc_full = np.hstack([np.zeros((q_frc.shape[0], 1)), q_frc[:, 0:1],
-                        np.zeros((q_frc.shape[0], 3)), q_frc[:, 1:3]])
+# Import input data -----------------------------------------------------------
+q_frc = pd.read_csv('data/frc_inputs_force80_kt10000000_muN106.csv')
+q_frc = q_frc[['a1p', 'a3p', 'b3p']].to_numpy()
+q_frc_full = np.hstack([
+    np.zeros((q_frc.shape[0], 1)),
+    q_frc[:, [0]],
+    np.zeros((q_frc.shape[0], 3)),
+    q_frc[:, [1]],
+    q_frc[:, [2]],
+])
 
 # Load NN ---------------------------------------------------------------------
 nn_id = '2026-04-16_09-31-57'  # '2026-04-01_11-16-24'

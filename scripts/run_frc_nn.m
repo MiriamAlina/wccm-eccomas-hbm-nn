@@ -24,7 +24,7 @@ inode   = 14;               % ~6th pocket
 D       = 0.005;             % modal damping ratio
 Dmodes  = 1:4;              % modal damped modes
 dir     = 'trans';          % transverse direction
-force   = 105;               % forcing in Newton
+force   = 80;               % forcing in Newton
 add_nonlinear_attachment(beam,inode,dir,'elasticDryFriction',...
     'stiffness',kt,'friction_limit_force',muN,'ishysteretic',1);
 % properties of the nonlinearity ------------------------------------------
