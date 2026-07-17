@@ -18,7 +18,7 @@ plot_solver_behavior(
     cond_frequencies=cond['Om']/Om_stick,
     cond_numbers=[cond['cond_AFT'], cond['cond_NN']],
     labels=['AFT', 'NN'],
-    figure_name='EB1to3_FRC_comparison_with_inset',
+    figure_name='solution_behavior',
     file_format='pdf',
     save_figure=False
 )

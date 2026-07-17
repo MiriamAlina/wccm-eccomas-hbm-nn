@@ -55,7 +55,7 @@ print('Relative L2 norm error average:',
 plot_prediction_vs_ground_truth_with_inset(
     [fnl_rel_aft],
     [fnl_rel_nn],
-    figure_name='all_predictions_vs_ground_truths_frc', file_format='pdf',
+    figure_name='predictions_vs_ground_truths', file_format='pdf',
     save_figure=False)
 
 plot_coefficients_over_iterations(
@@ -64,11 +64,11 @@ plot_coefficients_over_iterations(
     fnl_rel_nn)
 
 individual_normalized_mse_bar_plot(individual_metrics_frc_normalized,
-                                   figure_name='error_metrics_bar_frc',
+                                   figure_name='nmse_bar_frc',
                                    file_format='pdf', save_figure=False)
 
 spider_plot_error_metrics(global_metrics_frc, global_metrics_frc_normalized,
-                          figure_name='EB1to3_error_metrics_spider',
+                          figure_name='error_metrics_spider',
                           file_format='pdf', save_figure=False)
 
 plt.show()

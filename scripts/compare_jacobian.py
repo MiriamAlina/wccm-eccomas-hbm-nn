@@ -43,6 +43,6 @@ for k in range(K):
     J_ana[k, 2:, 0] = J_ana_tmp[5:, 1]
     J_ana[k, 2:, 1:] = J_ana_tmp[5:, 5:]
 
-plot_jacobian_comparison(q_frc, J_nn, J_ana, figure_name='jenkins_jacobian',
+plot_jacobian_comparison(q_frc, J_nn, J_ana, figure_name='jacobian',
                          file_format='png', save_figure=False)
 plt.show()
