@@ -150,7 +150,7 @@ dFnl_cs_AFT(IS,:) = -imag(dFnl_AFT(ID,:));
 
 %% Computation of the Fourier coefficients of the nonlinear forces and the
 % Jacobian using the Neural Network
-NN_id = '2026-04-16_09-31-57';
+NN_id = get_NN_id(analysis_type, varargin{:});
 [Fnl_NN,dFnl_NN] = HB_nonlinear_forces_NN(NN_id, X, N, H, system);
 Fnl_cs = Fnl_NN;
 dFnl_cs = dFnl_NN;
@@ -450,6 +450,30 @@ for nl=1:length(nonlinear_elements)
         dF = dF + W*dFnl;
     end
 end
+end
+
+
+function NN_id = get_NN_id(analysis_type, varargin)
+switch lower(analysis_type)
+    case {'frf','frequency response'}
+        nn_id_arg_index = 1;
+    case {'nma','nonlinear modal analysis'}
+        nn_id_arg_index = 2;
+    otherwise
+        nn_id_arg_index = [];
+end
+
+if ~isempty(nn_id_arg_index) && numel(varargin) >= nn_id_arg_index && ...
+        ~isempty(varargin{nn_id_arg_index})
+    NN_id = varargin{nn_id_arg_index};
+    return;
+end
+
+persistent cached_NN_id
+if isempty(cached_NN_id)
+    cached_NN_id = select_model_id();
+end
+NN_id = cached_NN_id;
 end
 
 

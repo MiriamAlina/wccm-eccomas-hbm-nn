@@ -2,6 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from hbm_nn.artifact_selection import select_data_id
 from hbm_nn.config import ModelConfig
 from hbm_nn.model import build_mlp
 from hbm_nn.plotting import plot_loss
@@ -23,7 +24,7 @@ if not SAVE:
     input(f'{RED}WARNING: SAVE is set to {SAVE}. To save the model, '
           f'set SAVE = True. Press Enter to continue...{RESET}')
 
-data_id = '2026-07-17_22-12-15'
+data_id = select_data_id()
 data_file = 'data_H3_'+data_id
 
 ###############################################################################

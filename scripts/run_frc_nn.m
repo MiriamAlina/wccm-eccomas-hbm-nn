@@ -67,6 +67,7 @@ H       = 3;               % number of harmonics to be considered
 N       = 2^10;             % sample points for the AFT (time discretisation)
 
 analysis = 'FRF';
+nn_id = select_model_id('../models');
 % Solve and continue w.r.t. Om  
 Om_s    = round(om_stick(imod)*.1);   % start frequency
 Om_e    = round(om_stick(imod)*1.5);  % end frequency    
@@ -95,7 +96,7 @@ Sopt    = struct(   'jac', 'x', ...
                     'stepmax',1e4);                         % maximal number of steps before aborting
 
 [X_HB,Solinfo_HB] = solve_and_continue(y0, ...
-                            @(X) hb_residual_nn(X,beam,H,N,analysis),...
+                            @(X) hb_residual_nn(X,beam,H,N,analysis,nn_id),...
                                             Om_s,Om_e,ds,Sopt);
 % Interpret solver output
 Om_HB   = X_HB(end,:);

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from hbm_nn.aft_nonlinearity import compute_nonlinear_force_coefficients
 from hbm_nn.fourier_conversion import (convert_cossin_to_comexp,
                                        convert_comexp_to_cossin)
+from hbm_nn.artifact_selection import select_model_id
 from hbm_nn.nn_nonlinearity import infer_nonlinear_force_coefficients
 from hbm_nn.error_metrics import compute_error_metrics
 from hbm_nn.plotting import (
@@ -26,8 +27,7 @@ q_frc_full = np.hstack([
     q_frc[:, [2]],
 ])
 
-nn_id = '2026-07-17_22-09-41'  # '2026-04-01_11-16-24'
-nn_path = f'models/mlp_jenkins_h3_{nn_id}.pt'
+nn_id = select_model_id()
 
 H = 3
 N = 2**6
