@@ -35,6 +35,13 @@ python -m pip install -e .
 Files to be executed can be found in scripts directory. Execute all files from project top-level e.g. <python3 scripts/generate_data.py>. 
 To run matlab files use batch mode e.g. <matlab -batch "run('scripts/run_frc_nn.m')">
 
+## Workflow Overview
+The diagram below summarizes the overall process, including data generation, neural network training, and evaluation regarding prediction accuracy, solver behavior and generalization capabilities.  
+
+All executable scripts for reproducing the results are in the folder [`scripts`](scripts). The folder [`src/hbm_nn`](src/hbm_nn/) contains helper functions.  
+
+[<img src="workflow.svg" height="600">](workflow.svg)
+
 ## Citation
 If you use this code in your research, please cite:
 ```bibtex

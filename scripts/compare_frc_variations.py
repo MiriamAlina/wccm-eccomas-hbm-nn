@@ -2,6 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from hbm_nn.plotting import plot_frc_variations
+from hbm_nn.util import check_folder_structure
+
+
+check_folder_structure()
 
 
 def load_results(force, kt, muN):
