@@ -1,7 +1,7 @@
 clear;
 close all;
 clc;
-addpath('src/hbm_nn/');
+addpath('../src/hbm_nn/');
 
 %% beam properties
 % properties of the beam --------------------------------------------------
@@ -132,4 +132,4 @@ Q_nl    = qrms_HB(i_ex,:)/len;
 
 T = table(freq_ratio(:), Q_stick(:), Q_free(:), Q_slip(:), Q_nl(:), Solinfo_HB.NIT(:), Solinfo_HB.FC(:), ...
           'VariableNames', {'freq_ratio','Q_stick','Q_free','Q_slip','Q_nl','NIT','FC'});  %%%%%
-writetable(T, sprintf('data/nn_results_force%.0f_kt%.0f_muN%.0f.csv', force, kt, muN));
+writetable(T, sprintf('../data/nn_results_force%.0f_kt%.0f_muN%.0f.csv', force, kt, muN));
