@@ -8,7 +8,7 @@ from hbm_nn.fourier_conversion import (convert_cossin_to_comexp,
                                        convert_comexp_to_cossin)
 
 
-training_points = 10000
+training_points = 20000
 
 H = 3       # Number of harmonics
 N = 2**6    # Number of time samples

@@ -367,3 +367,25 @@ def plot_jacobian_comparison(q_frc, J_nn, J_ana, figure_name, file_format,
     if save_figure:
         plt.savefig(f'./figures/{figure_name}.{file_format}', dpi=300,
                     bbox_inches="tight")
+
+
+def loss_plot(train_loss, val_loss, figure_name, save_figure=False):
+    """
+    Create a plot of training and validation loss over epochs.
+    Inputs:
+        train_loss : list of float
+            List of training loss values over epochs.
+        val_loss : list of float
+            List of validation loss values over epochs.
+        figure_name : str
+            Name of the figure file to save.
+    """
+    plt.figure(figsize=(4, 3))
+    plt.semilogy(train_loss, color=two_colors_set[0], label='Training loss')
+    plt.semilogy(val_loss, color=two_colors_set[1], label='Validation loss')
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.tight_layout()
+    if save_figure:
+        plt.savefig(f'./figures/{figure_name}.svg', bbox_inches='tight')
