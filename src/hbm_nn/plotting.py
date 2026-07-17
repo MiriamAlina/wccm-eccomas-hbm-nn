@@ -369,7 +369,7 @@ def plot_jacobian_comparison(q_frc, J_nn, J_ana, figure_name, file_format,
                     bbox_inches="tight")
 
 
-def loss_plot(train_loss, val_loss, figure_name, save_figure=False):
+def plot_loss(train_loss, val_loss, figure_name, save_figure=False):
     """
     Create a plot of training and validation loss over epochs.
     Inputs:
@@ -389,3 +389,42 @@ def loss_plot(train_loss, val_loss, figure_name, save_figure=False):
     plt.tight_layout()
     if save_figure:
         plt.savefig(f'./figures/{figure_name}.svg', bbox_inches='tight')
+
+
+def plot_inputs_3d(q_train, q_frc, figure_name, file_format='png',
+                   save_figure=False):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(q_train[:, 0], q_train[:, 1], q_train[:, 2], s=.1, color='grey',
+               label='Training samples')
+    ax.scatter(q_frc[:, 0], q_frc[:, 1], q_frc[:, 2], s=20, c='r',
+               label='FRC inputs')
+    ax.set_xlabel(r'$a_1$')
+    ax.set_ylabel(r'$a_3$')
+    ax.set_zlabel(r'$b_3$')
+    ax.legend()
+    if save_figure:
+        plt.savefig(f'./figures/{figure_name}.{file_format}', dpi=300)
+
+
+def plot_inputs_pairwise(q_train, q_frc, figure_name, file_format='png',
+                         save_figure=False):
+    fig, ax = plt.subplots(3, 1, figsize=(5, 6))
+    ax[0].plot(q_train[:, 0], q_train[:, 1], '.', markersize=.5, color='grey',
+               label='Training data')
+    ax[0].plot(q_frc[:, 0], q_frc[:, 1], 'x', color='r', label='FRC inputs')
+    ax[0].set_xlabel(r'$a_1$')
+    ax[0].set_ylabel(r'$a_3$')
+    ax[0].legend()
+    ax[1].plot(q_train[:, 0], q_train[:, 2], '.', markersize=.5, color='grey',
+               label='Training data')
+    ax[1].plot(q_frc[:, 0], q_frc[:, 2], 'x', color='r', label='FRC inputs')
+    ax[1].set_xlabel(r'$a_1$')
+    ax[1].set_ylabel(r'$b_3$')
+    ax[2].plot(q_train[:, 1], q_train[:, 2], '.', markersize=.5, color='grey',
+               label='Training data')
+    ax[2].plot(q_frc[:, 1], q_frc[:, 2], 'x', color='r', label='FRC inputs')
+    ax[2].set_xlabel(r'$a_3$')
+    ax[2].set_ylabel(r'$b_3$')
+    if save_figure:
+        plt.savefig(f'./figures/{figure_name}.{file_format}', dpi=300)

@@ -4,7 +4,7 @@ import numpy as np
 import torch
 from hbm_nn.config import ModelConfig
 from hbm_nn.model import build_mlp
-from hbm_nn.plotting import loss_plot
+from hbm_nn.plotting import plot_loss
 from hbm_nn.training import load_and_scale_data, fit, save_artifacts
 
 # suppress duplicate OpenMP warning
@@ -76,6 +76,6 @@ if SAVE:
 ###############################################################################
 # Plot loss curves
 ###############################################################################
-loss_plot(history['train_losses'], history['val_losses'],
+plot_loss(history['train_losses'], history['val_losses'],
           figure_name=f'loss_{model_id}', save_figure=SAVE)
 plt.show()
