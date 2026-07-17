@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -12,7 +13,7 @@ from hbm_nn.plotting import (
     individual_normalized_mse_bar_plot,
     spider_plot_error_metrics
 )
-
+os.environ["CUDA_VISIBLE_DEVICES"]=""
 
 # Performance on FRC trajectory -----------------------------------------------
 q_frc = pd.read_csv('data/frc_inputs_force80_kt10000000_muN106.csv')
@@ -25,7 +26,7 @@ q_frc_full = np.hstack([
     q_frc[:, [2]],
 ])
 
-nn_id = '2026-04-16_09-31-57'  # '2026-04-01_11-16-24'
+nn_id = '2026-07-17_22-09-41'  # '2026-04-01_11-16-24'
 nn_path = f'models/mlp_jenkins_h3_{nn_id}.pt'
 
 H = 3

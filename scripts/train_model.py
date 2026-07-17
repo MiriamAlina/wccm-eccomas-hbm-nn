@@ -7,6 +7,8 @@ from hbm_nn.model import build_mlp
 from hbm_nn.plotting import plot_loss
 from hbm_nn.training import load_and_scale_data, fit, save_artifacts
 
+os.environ["CUDA_VISIBLE_DEVICES"]=""
+
 # suppress duplicate OpenMP warning
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
