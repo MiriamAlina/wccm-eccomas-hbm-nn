@@ -31,6 +31,13 @@ From the top-level repository directory (where `pyproject.toml` is located), ins
 python -m pip install -e .
 ```
 
+## Workflow Overview
+The diagram below summarizes the overall process, including data generation, neural network training, and evaluation regarding prediction accuracy, solver behavior and generalization capabilities.  
+
+All executable scripts for reproducing the results are in the folder [`scripts`](scripts). The folder [`src/hbm_nn`](src/hbm_nn/) contains helper functions.  
+
+[<img src="workflow.svg" height="600">](workflow.svg)
+
 ## Citation
 If you use this code in your research, please cite:
 ```bibtex
