@@ -43,14 +43,7 @@ global_metrics_frc, individual_metrics_frc = \
 global_metrics_frc_normalized, individual_metrics_frc_normalized = \
     compute_error_metrics(fnl_rel_aft, fnl_rel_nn, normalize=True)
 
-print('global_metrics_frc:',
-      global_metrics_frc)
-
-print('individual_metrics_frc_normalized:',
-      individual_metrics_frc_normalized)
-
-print('global_metrics_frc_normalized:',
-      global_metrics_frc_normalized)
+print('Relative L2 norm error:', global_metrics_frc['Relative\nL$^2$ Norm'])
 
 plot_prediction_vs_ground_truth_with_inset(
     [fnl_rel_aft],

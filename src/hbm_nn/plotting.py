@@ -11,6 +11,7 @@ plt.rcParams.update({"text.usetex": True,
                      "font.size": 12
                      })
 
+input_labels = [r"$a_1$", r"$b_1$", r"$a_3$", r"$b_3$"]
 output_labels = [r"$A_1$", r"$B_1$", r"$A_3$", r"$B_3$"]
 two_colors_set = ['#1D3557', '#e63946']
 four_colors_set = ['#1D3557', '#008b9a', '#f19699', '#e63946']
@@ -33,15 +34,17 @@ def plot_coefficients_over_iterations(
 
     fig, ax = plt.subplots(4, 1, figsize=(5, 8))
     for i in range(4):
-        ax[0].plot(input_coeffs[:, i], color=four_colors_set[i])
+        ax[0].plot(input_coeffs[:, i], label=input_labels[i],
+                   color=four_colors_set[i])
         ax[1].plot(aft_outputs[:, i], color=four_colors_set[i])
         ax[2].plot(nn_outputs[:, i], color=four_colors_set[i])
         ax[3].plot(aft_outputs[:, i] - nn_outputs[:, i],
                    label=output_labels[i], color=four_colors_set[i])
     ax[0].set_title('Input coefficients over iterations')
+    ax[0].legend(loc="upper right")
     ax[1].set_title('AFT output coefficients over iterations')
     ax[2].set_title('NN output coefficients over iterations')
-    ax[3].legend(loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.02))
+    ax[3].legend(loc="upper right")
     ax[3].set_title('Difference of AFT and NN outputs over iterations')
     plt.tight_layout()
 
@@ -118,7 +121,7 @@ def individual_normalized_mse_bar_plot(
     x = np.arange(len(norm))
     w = 0.4
     fig, ax = plt.subplots(1, 1, figsize=(3.5, 3))
-    ax.bar(x, norm, label=output_labels, width=w, color=grayscale_colors_set)
+    ax.bar(x, norm, label=output_labels, width=w, color=four_colors_set)
     ax.set_xticks(x)
     ax.set_xticklabels(output_labels)
     ax.set_xlabel('Neural Network Output')
@@ -164,7 +167,7 @@ def spider_plot_error_metrics(
     ax.set_xticklabels(labels)
     ax.tick_params(axis='x', pad=12)
     ax.set_ylim(min(values)/3, max(values)*6)
-    ax.legend(loc='upper center', bbox_to_anchor=(.5, 1.2), ncol=2)
+    ax.legend(loc='upper center', bbox_to_anchor=(.5, 1.4), ncol=2)
     plt.tight_layout()
     if save_figure:
         plt.savefig(f'figures/{figure_name}.{file_format}',
