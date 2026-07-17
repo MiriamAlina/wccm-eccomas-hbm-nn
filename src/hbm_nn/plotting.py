@@ -242,3 +242,86 @@ def plot_frc_variations(data_list,
     if save_figure:
         plt.savefig(f'figures/{figure_name}.{file_format}',
                     bbox_inches='tight')
+
+
+def plot_solver_behavior(frequencies, amplitudes, iter_num, cond_frequencies,
+                         cond_numbers, labels, figure_name, file_format='pdf',
+                         save_figure=False):
+    """
+    Create a plot comparing the solver behavior of AFT and NN methods.
+    Inputs:
+        frequencies: List of frequency arrays for reference and testing
+            results (list of numpy arrays)
+        amplitudes: List of amplitude arrays for reference and testing results
+            (list of numpy arrays)
+        iter_num: List of iteration number arrays for reference and testing
+            results (list of numpy arrays)
+        cond_frequencies: Array of condition number frequencies (numpy array)
+        cond_numbers: List of condition number arrays (list of numpy arrays)
+        labels: List of labels for the methods (list of str)
+        figure_name: Name for saving the figure (str)
+        file_format: Format for saving the figure (str, default='pdf')
+        save_figure: Flag to save the figure (bool, default=False)
+    """
+    fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(7, 5))
+    fig.subplots_adjust(left=0.15, right=0.8, bottom=0.15, top=0.95)
+    ax[0].plot(frequencies[0], amplitudes[0], label=labels[0],
+               linestyle='-', color='k')
+    ax[0].plot(frequencies[1], amplitudes[1], label=labels[1],
+               marker='o', linestyle='', markersize=2.5, color='None',
+               markeredgewidth=0.8, markeredgecolor='#e63946')
+    ax[2].set_xlabel('Excitation Frequency ' +
+                     r'$\Omega_{\mathrm{exc}} / \omega_{\mathrm{eig}}$')
+    ax[0].set_ylabel('Response Amplitude\n' +
+                     r'$q_{\mathrm{exc}} / l_{\mathrm{beam}}$', labelpad=15)
+    ax[0].tick_params(axis='both')
+    ax[0].grid(linewidth=0.5, color='lightgrey')
+    ax[0].legend(loc='upper left', bbox_to_anchor=(1.02, 1.0),
+                 borderaxespad=0.0, title='Method')
+
+    inset_xlim = (.61, .64)
+    inset_ylim = (4.3e-5, 4.4e-5)
+
+    axins = inset_axes(
+        ax[0],
+        width="20%",
+        height="25%",
+        loc="upper left",
+        bbox_to_anchor=(0.1, -0.15, 1, 1),
+        bbox_transform=ax[0].transAxes,
+        borderpad=0
+    )
+
+    axins.plot(frequencies[0], amplitudes[0], label=labels[0],
+               linestyle='-', color='k')
+    axins.plot(frequencies[1], amplitudes[1], label=labels[1],
+               marker='o', linestyle='', markersize=2.5, color='None',
+               markeredgewidth=0.8, markeredgecolor='#e63946')
+    axins.set_xlim(*inset_xlim)
+    axins.set_ylim(*inset_ylim)
+    axins.tick_params(axis='both', labelsize=10)
+    axins.grid(linewidth=0.5, color='lightgrey')
+    mark_inset(ax[0], axins, loc1=2, loc2=4, fc="none", ec="0.5")
+
+    ax[1].plot(cond_frequencies, cond_numbers[0], label=labels[0],
+               linestyle='-', color='k')
+    ax[1].plot(cond_frequencies, cond_numbers[1], label=labels[1],
+               marker='o', linestyle='', markersize=2.5, color='None',
+               markeredgewidth=0.8, markeredgecolor='#e63946')
+    ax[1].set_yscale('log')
+    ax[1].set_ylabel("Condition number\n" +
+                     r'$\kappa=\sigma_{\mathrm{max}}/\sigma_{\mathrm{min}}$',
+                     labelpad=5)
+    ax[1].grid(linewidth=0.5, color='lightgrey')
+
+    ax[2].plot(frequencies[0], iter_num[0], label=labels[0],
+               linestyle='-', color='k')
+    ax[2].plot(frequencies[1], iter_num[1], label=labels[1],
+               marker='o', linestyle='', markersize=2.5, color='None',
+               markeredgewidth=0.8, markeredgecolor='#e63946')
+    ax[2].set_ylabel("Number of\nNewton iterations", labelpad=15)
+    ax[2].grid(linewidth=0.5, color='lightgrey')
+
+    if save_figure:
+        plt.savefig(f'./figures/{figure_name}.{file_format}',
+                    bbox_inches='tight')
