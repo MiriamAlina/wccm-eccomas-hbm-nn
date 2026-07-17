@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 import pandas as pd
+from hbm_nn.artifact_selection import select_data_id
 from hbm_nn.plotting import plot_inputs_3d, plot_inputs_pairwise
 from hbm_nn.util import check_folder_structure
 
@@ -13,7 +14,7 @@ q_frc = pd.read_csv('data/frc_inputs_force80_kt10000000_muN106.csv')
 q_frc = q_frc[['a1p', 'a3p', 'b3p']].to_numpy()
 
 # Training data ---------------------------------------------------------------
-data_id = '2026-07-17_22-12-15'
+data_id = select_data_id()
 data_path = f'data/train_data_H3_{data_id}.npz'
 data = np.load(data_path)
 q_train = data['q_coeffs']  # input: [a1, a3, b3]

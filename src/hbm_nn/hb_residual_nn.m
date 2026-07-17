@@ -150,7 +150,7 @@ dFnl_cs_AFT(IS,:) = -imag(dFnl_AFT(ID,:));
 
 %% Computation of the Fourier coefficients of the nonlinear forces and the
 % Jacobian using the Neural Network
-NN_id = '2026-04-16_09-31-57';
+NN_id = get_NN_id(analysis_type, varargin{:});
 [Fnl_NN,dFnl_NN] = HB_nonlinear_forces_NN(NN_id, X, N, H, system);
 Fnl_cs = Fnl_NN;
 dFnl_cs = dFnl_NN;
@@ -453,14 +453,67 @@ end
 end
 
 
+function NN_id = get_NN_id(analysis_type, varargin)
+switch lower(analysis_type)
+    case {'frf','frequency response'}
+        nn_id_arg_index = 1;
+    case {'nma','nonlinear modal analysis'}
+        nn_id_arg_index = 2;
+    otherwise
+        nn_id_arg_index = [];
+end
+
+if ~isempty(nn_id_arg_index) && numel(varargin) >= nn_id_arg_index && ...
+        ~isempty(varargin{nn_id_arg_index})
+    NN_id = varargin{nn_id_arg_index};
+    return;
+end
+
+persistent cached_NN_id
+if isempty(cached_NN_id)
+    cached_NN_id = select_model_id();
+end
+NN_id = cached_NN_id;
+end
+
+
+function pyModule = get_NN_python_module()
+persistent cached_pyModule
+if isempty(cached_pyModule)
+    %% Ordner des aktuellen MATLAB-Skripts
+    scriptDir = fileparts(mfilename('fullpath'));
+
+    %% Eine Ebene höher liegt bereits src/
+    srcDir = fileparts(scriptDir);
+
+    pythonFile = fullfile(srcDir, ...
+        'hbm_nn', 'nn_nonlinearity.py');
+
+    assert(isfile(pythonFile), ...
+        "Python-Datei wurde nicht gefunden: %s", pythonFile);
+
+    %% src/ zum Python-Pfad hinzufügen
+    if count(py.sys.path, py.str(srcDir)) == 0
+        insert(py.sys.path, int32(0), py.str(srcDir));
+    end
+
+    %% Weil srcDir bereits auf src/ zeigt: ohne "src."
+    moduleName = 'hbm_nn.nn_nonlinearity';
+
+    py.importlib.invalidate_caches();
+    cached_pyModule = py.importlib.import_module(moduleName);
+end
+
+pyModule = cached_pyModule;
+end
+
+
 %% Computation of the Fourier coefficients of the nonlinear forces and the 
 % Jacobian using a Neural Network
 function [F,dF] = ...
     HB_nonlinear_forces_NN(NN_path, X, ~, H, system)
 
-pyModule = py.importlib.import_module('src.hbm_nn.nn_nonlinearity');
-py.importlib.reload(pyModule);  % might slow down the code
-
+pyModule = get_NN_python_module();
 w = system.nonlinear_elements{1}.force_direction;
 W = kron(eye(2*H+1),w);
 coeffs = W'*X(1:end-1);
@@ -526,8 +579,9 @@ end
 %}
 
 %% Evaluate the Neural Network
-nn_output = double(pyModule.infer_nonlinear_force_coefficients(NN_path, nn_input));
-J_nn = fc * double(pyModule.compute_autodiff_jacobian(NN_path, nn_input));
+nn_result = pyModule.infer_nonlinear_force_and_jacobian(NN_path, nn_input);
+nn_output = double(nn_result{1});
+J_nn = fc * double(nn_result{2});
 
 % Rescale output
 yp = fc * nn_output;
