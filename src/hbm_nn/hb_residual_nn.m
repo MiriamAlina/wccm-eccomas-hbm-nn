@@ -458,9 +458,32 @@ end
 function [F,dF] = ...
     HB_nonlinear_forces_NN(NN_path, X, ~, H, system)
 
-pyModule = py.importlib.import_module('src.hbm_nn.nn_nonlinearity');
-py.importlib.reload(pyModule);  % might slow down the code
+clear py
 
+%% Ordner des aktuellen MATLAB-Skripts
+scriptDir = fileparts(mfilename('fullpath'));
+
+%% Eine Ebene höher liegt bereits src/
+srcDir = fileparts(scriptDir);
+
+pythonFile = fullfile(srcDir, ...
+    'hbm_nn', 'nn_nonlinearity.py');
+
+assert(isfile(pythonFile), ...
+    "Python-Datei wurde nicht gefunden: %s", pythonFile);
+
+%% src/ zum Python-Pfad hinzufügen
+if count(py.sys.path, py.str(srcDir)) == 0
+    insert(py.sys.path, int32(0), py.str(srcDir));
+end
+
+py.importlib.invalidate_caches();
+
+%% Weil srcDir bereits auf src/ zeigt: ohne "src."
+moduleName = 'hbm_nn.nn_nonlinearity';
+
+pyModule = py.importlib.import_module(moduleName);
+pyModule = py.importlib.reload(pyModule);
 w = system.nonlinear_elements{1}.force_direction;
 W = kron(eye(2*H+1),w);
 coeffs = W'*X(1:end-1);
