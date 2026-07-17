@@ -6,7 +6,7 @@ from hbm_nn.aft_nonlinearity import compute_analytical_jacobian
 from hbm_nn.plotting import plot_jacobian_comparison
 
 
-jac_info = pd.read_csv('data/EB1to3_cond_Om_force80_kt10000000_muN106.csv')
+jac_info = pd.read_csv('data/cond_Om_force80_kt10000000_muN106.csv')
 print('Frobenius norm error average:',
       np.round(np.average(jac_info['fnorm_error']) * 100, 3), '%')
 

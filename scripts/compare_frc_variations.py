@@ -6,9 +6,9 @@ from hbm_nn.plotting import plot_frc_variations
 
 def load_results(force, kt, muN):
     ref = pd.read_csv(
-        f'./data/EB1to3_reference_results_force{force}_kt{kt}_muN{muN}.csv')
+        f'./data/aft_results_force{force}_kt{kt}_muN{muN}.csv')
     test = pd.read_csv(
-        f'./data/EB1to3_testing_results_force{force}_kt{kt}_muN{muN}.csv')
+        f'./data/nn_results_force{force}_kt{kt}_muN{muN}.csv')
     frequencies = [ref['freq_ratio'].to_numpy(), test['freq_ratio'].to_numpy()]
     amplitudes = [ref['Q_nl'].to_numpy(), test['Q_nl'].to_numpy()]
     return frequencies, amplitudes

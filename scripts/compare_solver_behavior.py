@@ -5,9 +5,9 @@ from hbm_nn.plotting import plot_solver_behavior
 
 # Import data -----------------------------------------------------------------
 ref = pd.read_csv(
-    'data/EB1to3_reference_results_force80_kt10000000_muN106.csv')
-test = pd.read_csv('data/EB1to3_testing_results_force80_kt10000000_muN106.csv')
-cond = pd.read_csv('data/EB1to3_cond_Om_force80_kt10000000_muN106.csv')
+    'data/aft_results_force80_kt10000000_muN106.csv')
+test = pd.read_csv('data/nn_results_force80_kt10000000_muN106.csv')
+cond = pd.read_csv('data/cond_Om_force80_kt10000000_muN106.csv')
 
 # Plot results ----------------------------------------------------------------
 Om_stick = 1.3410e+03  # normalize frequency axis where necessary
