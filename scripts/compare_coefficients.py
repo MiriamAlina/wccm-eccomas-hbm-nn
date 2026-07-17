@@ -13,9 +13,7 @@ from hbm_nn.plotting import (
 )
 
 
-###############################################################################
-# Performance on FRC trajectory
-###############################################################################
+# Performance on FRC trajectory -----------------------------------------------
 q_frc = np.loadtxt('data/inputs_frc.txt', delimiter=',')
 q_frc_full = np.hstack([np.zeros((q_frc.shape[0], 1)), q_frc[:, 0:1],
                         np.zeros((q_frc.shape[0], 3)), q_frc[:, 1:3]])
@@ -38,12 +36,14 @@ for i in range(np.shape(q_frc_full)[0]):
     fnl_cs_NN = infer_nonlinear_force_coefficients(nn_id, q_frc[i])
     fnl_rel_nn = np.vstack([fnl_rel_nn, fnl_cs_NN])
 
+# Compute error metrics and plot results --------------------------------------
 global_metrics_frc, individual_metrics_frc = \
     compute_error_metrics(fnl_rel_aft, fnl_rel_nn)
 global_metrics_frc_normalized, individual_metrics_frc_normalized = \
     compute_error_metrics(fnl_rel_aft, fnl_rel_nn, normalize=True)
 
-print('Relative L2 norm error:', global_metrics_frc['Relative\nL$^2$ Norm'])
+print('Relative L2 norm error average:',
+      np.round(global_metrics_frc['Relative\nL$^2$ Norm'] * 100, 3), '%')
 
 plot_prediction_vs_ground_truth_with_inset(
     [fnl_rel_aft],
@@ -55,7 +55,6 @@ plot_coefficients_over_iterations(
     np.hstack([q_frc[:, 0:1], np.zeros((q_frc.shape[0], 1)), q_frc[:, 1:3]]),
     fnl_rel_aft,
     fnl_rel_nn)
-
 
 individual_normalized_mse_bar_plot(individual_metrics_frc_normalized,
                                    figure_name='error_metrics_bar_frc',

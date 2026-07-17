@@ -62,8 +62,6 @@ def compute_analytical_jacobian(N, H, x, k, fc):
         k: Tangential spring stiffness (float)
         fc: Coulomb limit force (float)
     Returns:
-        F: Cosine/sine force coefficients (ndarray of shape (2*H+1,))
-            [f0, A1, B1, A2, B2, ..., AH, BH]
         dF: Jacobian of F with respect to x (ndarray of shape (2*H+1, 2*H+1))
     """
 
@@ -128,15 +126,12 @@ def compute_analytical_jacobian(N, H, x, k, fc):
             Dqsl[i, :] = Dqsl[i - 1, :]
 
     # Keep last period only
-    f_last = f[-N:]
     Df_last = Df[-N:, :]
 
     # Fourier coefficients in cosine/sine form
-    F = np.zeros(n_coeff, dtype=float)
     dF = np.zeros((n_coeff, n_coeff), dtype=float)
 
     # Mean value
-    F[0] = np.sum(f_last) / N
     dF[0, :] = np.sum(Df_last, axis=0) / N
 
     # Harmonics
@@ -148,10 +143,7 @@ def compute_analytical_jacobian(N, H, x, k, fc):
         ib = 2 * h
 
         # Cosine and sine coefficients
-        F[ia] = 2.0 / N * np.sum(f_last * cos_h)
-        F[ib] = 2.0 / N * np.sum(f_last * sin_h)
-
         dF[ia, :] = 2.0 / N * np.sum(Df_last * cos_h[:, None], axis=0)
         dF[ib, :] = 2.0 / N * np.sum(Df_last * sin_h[:, None], axis=0)
 
-    return F, dF
+    return dF

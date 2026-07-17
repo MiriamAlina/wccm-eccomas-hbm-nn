@@ -11,8 +11,11 @@ plt.rcParams.update({"text.usetex": True,
                      "font.size": 12
                      })
 
-input_labels = [r"$a_1$", r"$b_1$", r"$a_3$", r"$b_3$"]
+input_labels_full = [r"$a_1$", r"$b_1$", r"$a_3$", r"$b_3$"]
+input_labels = [r"$a_1$", r"$a_3$", r"$b_3$"]
 output_labels = [r"$A_1$", r"$B_1$", r"$A_3$", r"$B_3$"]
+input_symbols = [r"a_1", r"a_3", r"b_3"]
+output_symbols = [r"A_1", r"B_1", r"A_3", r"B_3"]
 two_colors_set = ['#1D3557', '#e63946']
 four_colors_set = ['#1D3557', '#008b9a', '#f19699', '#e63946']
 grayscale_colors_set = ['#323232', '#646464', '#969696', '#C8C8C8']
@@ -34,7 +37,7 @@ def plot_coefficients_over_iterations(
 
     fig, ax = plt.subplots(4, 1, figsize=(5, 8))
     for i in range(4):
-        ax[0].plot(input_coeffs[:, i], label=input_labels[i],
+        ax[0].plot(input_coeffs[:, i], label=input_labels_full[i],
                    color=four_colors_set[i])
         ax[1].plot(aft_outputs[:, i], color=four_colors_set[i])
         ax[2].plot(nn_outputs[:, i], color=four_colors_set[i])
@@ -263,7 +266,7 @@ def plot_solver_behavior(frequencies, amplitudes, iter_num, cond_frequencies,
         file_format: Format for saving the figure (str, default='pdf')
         save_figure: Flag to save the figure (bool, default=False)
     """
-    fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(7, 5))
+    fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(8, 6))
     fig.subplots_adjust(left=0.15, right=0.8, bottom=0.15, top=0.95)
     ax[0].plot(frequencies[0], amplitudes[0], label=labels[0],
                linestyle='-', color='k')
@@ -325,3 +328,42 @@ def plot_solver_behavior(frequencies, amplitudes, iter_num, cond_frequencies,
     if save_figure:
         plt.savefig(f'./figures/{figure_name}.{file_format}',
                     bbox_inches='tight')
+
+
+def plot_jacobian_comparison(q_frc, J_nn, J_ana, figure_name, file_format,
+                             save_figure=False):
+    """
+    Create a scatter plot comparing the Jacobians computed analytically and
+    via autodiff.
+    Inputs:
+        q_frc: Displacement inputs over FRC (numpy array)
+        J_nn: AutoDiff NN Jacobian (numpy array)
+        J_ana: Analytical AFT Jacobian (numpy array)
+    """
+    fig, axes = plt.subplots(4, 3, figsize=(10, 7), sharex="col")
+    for i in range(4):  # output index (row)
+        for j in range(3):  # input index (col)
+            ax = axes[i, j]
+            x = q_frc[:, j]
+            y_nn = J_nn[:, i, j]
+            y_ana = J_ana[:, i, j]
+            ax.scatter(x, y_ana, s=8, alpha=0.4, color='k',
+                       label="Analytical" if (i == 0 and j == 0) else None)
+            ax.scatter(x, y_nn, s=8, alpha=0.4, color='#e63946',
+                       label="AutoDiff" if (i == 0 and j == 0) else None)
+            if i == 3:
+                ax.set_xlabel(input_labels[j], fontsize=12)
+
+            ylabel = (fr"$\frac{{\partial {output_symbols[i]}}}"
+                      fr"{{\partial {input_symbols[j]}}}$")
+            ax.set_ylabel(ylabel, rotation=0, fontsize=18, labelpad=15,
+                          va="center")
+
+    handles, labels_legend = axes[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels_legend, loc="lower center", ncol=2,
+               bbox_to_anchor=(0.5, 0.02), fontsize=12, frameon=True)
+    fig.subplots_adjust(wspace=0.8, hspace=0.45)
+    fig.tight_layout(rect=[0, 0.08, 1, 1])
+    if save_figure:
+        plt.savefig(f'./figures/{figure_name}.{file_format}', dpi=300,
+                    bbox_inches="tight")

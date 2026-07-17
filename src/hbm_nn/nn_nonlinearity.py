@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 import joblib
 
@@ -34,5 +35,33 @@ def infer_nonlinear_force_coefficients(NN_id, X):
     return output.detach().numpy()
 
 
-def compute_autodiff_jacobian():
-    return
+def compute_autodiff_jacobian(NN_id, input):
+    """
+    Compute the Jacobian of the neural network model with respect to the input
+    using automatic differentiation.
+    Inputs:
+        NN_id: Identifier for the trained neural network model (str)
+        input : Input data for the neural network (numpy array)
+    Returns:
+        Jacobian of the neural network model with respect to the input
+            (numpy array)
+    """
+    NN_model = torch.load(f'models/mlp_jenkins_h3_{NN_id}.pt',
+                          weights_only=False)
+    NN_model.eval()
+
+    scaler = joblib.load(f'models/scaling_params_jenkins_h3_{NN_id}.joblib')
+    X_mean = torch.tensor(scaler['X_mean'], dtype=torch.float32)
+    X_std = torch.tensor(scaler['X_std'], dtype=torch.float32)
+    y_std = torch.tensor(scaler['y_std'], dtype=torch.float32)
+
+    X = np.array(input, dtype=float)
+    x = torch.tensor(X, dtype=torch.float32, requires_grad=True)
+    x_scaled = (x - X_mean) / X_std
+
+    jac_scaled = torch.autograd.functional.jacobian(NN_model, x_scaled)
+    jac_scaled = jac_scaled.squeeze()
+
+    jac = jac_scaled * y_std.unsqueeze(1) / X_std.unsqueeze(0)
+
+    return jac.detach().numpy()

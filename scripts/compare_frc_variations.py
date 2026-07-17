@@ -4,16 +4,6 @@ import pandas as pd
 from hbm_nn.plotting import plot_frc_variations
 
 
-# ----------------------------- System Parameters -----------------------------
-force_list = [45, 75, 105]
-fixed_force = 45
-kt_list = [int(1e7), int(1e7*.5), int(1e7*.35)]
-fixed_kt = int(1e7)
-muN_list = [int(.5*53*4 * .5), int(.5*53*4), int(.5*53*4 * 5)]
-fixed_muN = int(.5*53*4)
-method_labels = ['AFT', 'NN']
-
-
 def load_results(force, kt, muN):
     ref = pd.read_csv(
         f'./data/EB1to3_reference_results_force{force}_kt{kt}_muN{muN}.csv')
@@ -24,6 +14,16 @@ def load_results(force, kt, muN):
     return frequencies, amplitudes
 
 
+# System Parameters -----------------------------------------------------------
+force_list = [45, 75, 105]
+fixed_force = 45
+kt_list = [int(1e7), int(1e7*.5), int(1e7*.35)]
+fixed_kt = int(1e7)
+muN_list = [int(.5*53*4 * .5), int(.5*53*4), int(.5*53*4 * 5)]
+fixed_muN = int(.5*53*4)
+method_labels = ['AFT', 'NN']
+
+# Load Results ----------------------------------------------------------------
 freqs_by_force = []
 amps_by_force = []
 for force in force_list:
@@ -45,7 +45,7 @@ for kt in kt_list:
     freqs_by_kt.append(freqs)
     amps_by_kt.append(amps)
 
-
+# Plot Results ----------------------------------------------------------------
 plot_frc_variations(
     data_list=[kt_list, muN_list, force_list],
     freqs=[freqs_by_kt, freqs_by_muN, freqs_by_force],
