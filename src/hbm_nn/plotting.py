@@ -65,7 +65,7 @@ def plot_prediction_vs_ground_truth_with_inset(
         file_format: Format for saving the figure (str, default='svg')
         save_figure: Flag to save the figure (bool, default=False)
     """
-    fig, ax = plt.subplots(1, 1, figsize=(4, 2.5))
+    fig, ax = plt.subplots(1, 1, figsize=(4.5, 3))
     fig.subplots_adjust(left=0.15, right=0.7, bottom=0.15, top=0.95)
     pt = (0, 0)
     ax.axline(pt, slope=1, color='black', linewidth=0.5)
@@ -74,6 +74,7 @@ def plot_prediction_vs_ground_truth_with_inset(
             ax.plot(gt[:, i], pred[:, i], '.',
                     label=f'{output_labels[i]}',
                     color=four_colors_set[i])
+    ax.set_box_aspect(0.9)
     ax.set_xlabel('AFT Ground Truth')
     ax.set_ylabel('Neural Network Prediction')
     ax.legend()
@@ -199,40 +200,29 @@ def plot_frc_variations(data_list,
         figure_name: Name for saving the figure (str, default='frc_variations')
         file_format: Format for saving the figure (str, default='svg')
     """
-    plt.figure(figsize=(4, 3))
+    fig, ax = plt.subplots(figsize=(5.5, 5))
+    fig.subplots_adjust(left=0.15, right=0.95, bottom=0.45, top=0.95)
     groups = []
     for i, values in enumerate(data_list):
         group = [Line2D([], [], linestyle='none',
                         label=fixed_params_labels[i])]
         for j, var in enumerate(values):
             alpha = (j + 1) / len(values)
-            plt.plot(
-                freqs[i][j][0],
-                amps[i][j][0],
-                linestyle='-',
-                color=colors[i],
-                alpha=alpha
-            )
-            plt.plot(
-                freqs[i][j][1],
-                amps[i][j][1],
-                linestyle='',
-                marker='o',
-                markerfacecolor='none',
-                markeredgecolor=colors[i],
-                markersize=3,
-                alpha=alpha
-            )
+            ax.plot(freqs[i][j][0], amps[i][j][0],
+                    linestyle='-', color=colors[i], alpha=alpha)
+            ax.plot(freqs[i][j][1], amps[i][j][1],
+                    linestyle='', marker='o', markerfacecolor='none',
+                    markeredgecolor=colors[i], markersize=3, alpha=alpha)
             group.append(Line2D([0], [0], color=colors[i], linestyle='-',
                                 alpha=alpha,
                                 label=variation_value_labels[i][j]))
         groups.append(group)
 
-    plt.grid()
-    plt.xlabel(r'Excitation Frequency $\Omega_{\mathrm{exc}}/' +
-               r'\omega_{\mathrm{eig}}$')
-    plt.ylabel(r'Response Amplitude $q_{\mathrm{exc}} / l_{\mathrm{beam}}$')
-    plt.gca().set_box_aspect(.5)
+    ax.set_box_aspect(.5)
+    ax.grid()
+    ax.set_xlabel(r'Excitation Frequency $\Omega_{\mathrm{exc}}/' +
+                  r'\omega_{\mathrm{eig}}$')
+    ax.set_ylabel(r'Response Amplitude $q_{\mathrm{exc}} / l_{\mathrm{beam}}$')
 
     method_handles = [Line2D([0], [0], color='k', linestyle='-', label='AFT'),
                       Line2D([0], [0], color='k', linestyle='', marker='o',
@@ -246,15 +236,9 @@ def plot_frc_variations(data_list,
     for group in groups:
         group += [empty] * (n - len(group))
     handles = [handle for group in groups for handle in group]
-    plt.legend(
-        handles=handles,
-        ncol=len(groups),
-        loc='upper right',
-        columnspacing=1.5,
-        handlelength=0.7,
-        handletextpad=0.4,
-        bbox_to_anchor=(1.4, -.4),
-    )
+    plt.legend(handles=handles, ncol=len(groups), loc='upper right',
+               columnspacing=1.5, handlelength=0.7, handletextpad=0.4,
+               bbox_to_anchor=(1., -.3))
     if save_figure:
         plt.savefig(f'figures/{figure_name}.{file_format}',
                     bbox_inches='tight')
