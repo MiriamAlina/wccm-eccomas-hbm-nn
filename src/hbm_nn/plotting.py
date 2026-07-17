@@ -5,7 +5,7 @@ from matplotlib.lines import Line2D
 
 
 # Latex text font
-plt.rcParams.update({"text.usetex": True,
+plt.rcParams.update({"text.usetex": False,
                      "font.family": "serif",
                      "font.serif": ["Computer Modern Roman"],
                      "font.size": 12
