@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from hbm_nn.aft import compute_aft_solution
+from hbm_nn.aft_nonlinearity import compute_nonlinear_force_coefficients
 from hbm_nn.fourier_conversion import (convert_cossin_to_comexp,
                                        convert_comexp_to_cossin)
-from hbm_nn.nn_inference import evaluate_model
+from hbm_nn.nn_nonlinearity import infer_nonlinear_force_coefficients
 from hbm_nn.error_metrics import compute_error_metrics
 from hbm_nn.plotting import (
     plot_coefficients_over_iterations,
@@ -31,11 +31,11 @@ fnl_rel_aft = np.empty((0, 4))
 fnl_rel_nn = np.empty((0, 4))
 for i in range(np.shape(q_frc_full)[0]):
     q_ce = convert_cossin_to_comexp(q_frc_full[i])
-    fnl_ce = compute_aft_solution(N, H, q_ce, kt, fc)
+    fnl_ce = compute_nonlinear_force_coefficients(N, H, q_ce, kt, fc)
     fnl_cs = convert_comexp_to_cossin(fnl_ce, H)
     fnl_rel_aft = np.vstack([fnl_rel_aft, fnl_cs[[1, 2, 5, 6]]])
 
-    fnl_cs_NN = evaluate_model(nn_id, q_frc[i])
+    fnl_cs_NN = infer_nonlinear_force_coefficients(nn_id, q_frc[i])
     fnl_rel_nn = np.vstack([fnl_rel_nn, fnl_cs_NN])
 
 global_metrics_frc, individual_metrics_frc = \

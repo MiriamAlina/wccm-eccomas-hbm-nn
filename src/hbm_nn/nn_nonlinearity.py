@@ -2,7 +2,7 @@ import torch
 import joblib
 
 
-def evaluate_model(NN_id, X):
+def infer_nonlinear_force_coefficients(NN_id, X):
     """
     Evaluate the trained neural network model for the given input X.
     Inputs:
@@ -32,3 +32,7 @@ def evaluate_model(NN_id, X):
     output = output_scaled * y_std + y_mean
 
     return output.detach().numpy()
+
+
+def compute_autodiff_jacobian():
+    return
