@@ -1,7 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from hbm_nn.plotting import plot_solver_behavior
+from hbm_nn.util import check_folder_structure
 
+
+check_folder_structure()
 
 # Import data -----------------------------------------------------------------
 ref = pd.read_csv(

@@ -3,7 +3,10 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 import pandas as pd
 from hbm_nn.plotting import plot_inputs_3d, plot_inputs_pairwise
+from hbm_nn.util import check_folder_structure
 
+
+check_folder_structure()
 
 # FRC inputs ------------------------------------------------------------------
 q_frc = pd.read_csv('data/frc_inputs_force80_kt10000000_muN106.csv')

@@ -4,13 +4,6 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes, mark_inset
 from matplotlib.lines import Line2D
 
 
-# Latex text font
-plt.rcParams.update({"text.usetex": True,
-                     "font.family": "serif",
-                     "font.serif": ["Computer Modern Roman"],
-                     "font.size": 12
-                     })
-
 input_labels_full = [r"$a_1$", r"$b_1$", r"$a_3$", r"$b_3$"]
 input_labels = [r"$a_1$", r"$a_3$", r"$b_3$"]
 output_labels = [r"$A_1$", r"$B_1$", r"$A_3$", r"$B_3$"]

@@ -6,7 +6,10 @@ from time import strftime
 from hbm_nn.aft_nonlinearity import compute_nonlinear_force_coefficients
 from hbm_nn.fourier_conversion import (convert_cossin_to_comexp,
                                        convert_comexp_to_cossin)
+from hbm_nn.util import check_folder_structure
 
+
+check_folder_structure()
 
 training_points = 20000
 

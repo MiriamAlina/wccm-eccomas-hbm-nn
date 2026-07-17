@@ -12,7 +12,10 @@ from hbm_nn.plotting import (
     individual_normalized_mse_bar_plot,
     spider_plot_error_metrics
 )
+from hbm_nn.util import check_folder_structure
 
+
+check_folder_structure()
 
 # Performance on FRC trajectory -----------------------------------------------
 q_frc = pd.read_csv('data/frc_inputs_force80_kt10000000_muN106.csv')

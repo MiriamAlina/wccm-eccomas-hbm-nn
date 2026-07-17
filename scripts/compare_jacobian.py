@@ -4,7 +4,10 @@ import matplotlib.pyplot as plt
 from hbm_nn.nn_nonlinearity import compute_autodiff_jacobian
 from hbm_nn.aft_nonlinearity import compute_analytical_jacobian
 from hbm_nn.plotting import plot_jacobian_comparison
+from hbm_nn.util import check_folder_structure
 
+
+check_folder_structure()
 
 jac_info = pd.read_csv('data/cond_Om_force80_kt10000000_muN106.csv')
 print('Frobenius norm error average:',
