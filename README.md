@@ -31,6 +31,10 @@ From the top-level repository directory (where `pyproject.toml` is located), ins
 python -m pip install -e .
 ```
 
+## Usage
+Files to be executed can be found in scripts directory. Execute all files from project top-level e.g. <python3 scripts/generate_data.py>. 
+To run matlab files use batch mode e.g. <matlab -batch "run('scripts/run_frc_nn.m')">
+
 ## Citation
 If you use this code in your research, please cite:
 ```bibtex
