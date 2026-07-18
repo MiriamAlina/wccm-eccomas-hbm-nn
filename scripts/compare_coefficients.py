@@ -16,7 +16,7 @@ from hbm_nn.plotting import (
 )
 from hbm_nn.util import check_folder_structure
 
-os.environ["CUDA_VISIBLE_DEVICES"]=""
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 check_folder_structure()
 

@@ -32,8 +32,14 @@ python -m pip install -e .
 ```
 
 ## Usage
-Files to be executed can be found in scripts directory. Execute all files from project top-level e.g. <python3 scripts/generate_data.py>. 
-To run matlab files use batch mode e.g. <matlab -batch "run('scripts/run_frc_nn.m')">
+Files to be executed can be found in scripts directory. Execute all files from project top-level e.g. 
+```bash
+python3 scripts/generate_data.py
+``` 
+To run matlab files use batch mode e.g. 
+```bash
+matlab -batch "run('scripts/run_frc_nn.m')"
+```
 
 ## Workflow Overview
 The diagram below summarizes the overall process, including data generation, neural network training, and evaluation regarding prediction accuracy, solver behavior and generalization capabilities.  
