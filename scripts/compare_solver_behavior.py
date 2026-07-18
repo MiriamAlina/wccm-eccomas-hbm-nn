@@ -21,7 +21,7 @@ plot_solver_behavior(
     cond_frequencies=cond['Om']/Om_stick,
     cond_numbers=[cond['cond_AFT'], cond['cond_NN']],
     labels=['AFT', 'NN'],
-    figure_name='solution_behavior',
+    figure_name='solver_behavior',
     file_format='pdf',
     save_figure=False
 )
