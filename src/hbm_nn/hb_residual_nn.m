@@ -160,7 +160,7 @@ dFnl_cs = dFnl_NN;
 %{
  persistent hLine1 hFig frameCounter gifFilename
 if isempty(hLine1) || ~isvalid(hLine1)
-    gifFilename = '../q_evolution.gif';
+    gifFilename = fullfile(get_debug_output_dir(), 'q_evolution.gif');
     frameCounter = 0;
 
     hFig = figure(1); clf;
@@ -190,7 +190,7 @@ frameCounter = frameCounter + 1;
 %{
 persistent hLineA hFigA hLineB gifFilenameA frameCounterA
 if isempty(hLineA) || ~isvalid(hLineA)
-    gifFilenameA = '../Fnl_evolution.gif';
+    gifFilenameA = fullfile(get_debug_output_dir(), 'Fnl_evolution.gif');
     frameCounterA = 0;
 
     hFigA = figure(1); clf;
@@ -225,7 +225,7 @@ frameCounterA = frameCounterA + 1;
  persistent hFig hAx1 hAx2 hAx3 hImg1 hImg2 hImg3 gifFilename frameCounter
 if isempty(hFig) || ~isvalid(hFig)
 
-    gifFilename = '../dFnl_evolution.gif';
+    gifFilename = fullfile(get_debug_output_dir(), 'dFnl_evolution.gif');
     frameCounter = 0;
 
     % --- Figure Setup ---
@@ -319,10 +319,11 @@ s_NN  = svd(full(J_NN_loc));
 cond_AFT = max(s_AFT) / min(s_AFT);
 cond_NN  = max(s_NN)  / min(s_NN);
 persistent isFirstCall
-filename = sprintf('data/cond_Om_force%d_kt%d_muN%d.csv', ...
+filename = fullfile(get_debug_output_dir(), ...
+    sprintf('cond_Om_force%d_kt%d_muN%d.csv', ...
     system.Fex1(end-1), ...
     system.nonlinear_elements{1}.stiffness, ...
-    system.nonlinear_elements{1}.friction_limit_force);
+    system.nonlinear_elements{1}.friction_limit_force));
 T = table(fnorm_error, min(s_AFT), min(s_NN), cond_AFT, cond_NN, Om, ...
     'VariableNames', {'fnorm_error', 's_min_AFT', 's_min_NN', 'cond_AFT', 'cond_NN', 'Om'});
 if isempty(isFirstCall)
@@ -508,6 +509,21 @@ pyModule = cached_pyModule;
 end
 
 
+function project_root = get_project_root()
+current_file_dir = fileparts(mfilename('fullpath'));
+src_dir = fileparts(current_file_dir);
+project_root = fileparts(src_dir);
+end
+
+
+function debug_output_dir = get_debug_output_dir()
+debug_output_dir = fullfile(get_project_root(), 'data');
+if ~isfolder(debug_output_dir)
+    mkdir(debug_output_dir);
+end
+end
+
+
 %% Computation of the Fourier coefficients of the nonlinear forces and the 
 % Jacobian using a Neural Network
 function [F,dF] = ...
@@ -566,7 +582,8 @@ nn_input = scale * [a1p, a3p, b3p];
 %{
 idx_force = find(system.Fex1~=0,1,'first');
 force = system.Fex1(idx_force);
-filename = sprintf('data/frc_inputs_force%d_kt%d_muN%d.csv', force, k, fc);
+filename = fullfile(get_debug_output_dir(), ...
+    sprintf('frc_inputs_force%d_kt%d_muN%d.csv', force, k, fc));
 T = table(nn_input(1), nn_input(2), nn_input(3), ...
     'VariableNames', {'a1p','a3p','b3p'});
 persistent isFirstCall

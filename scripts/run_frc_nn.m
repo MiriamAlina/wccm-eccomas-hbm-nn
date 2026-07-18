@@ -1,7 +1,11 @@
 clear;
 close all;
 clc;
-addpath('../src/hbm_nn/');
+script_dir = fileparts(mfilename('fullpath'));
+project_root = fileparts(script_dir);
+addpath(fullfile(project_root, 'src', 'hbm_nn'));
+data_dir = fullfile(project_root, 'data');
+models_dir = fullfile(project_root, 'models');
 
 %% beam properties
 % properties of the beam --------------------------------------------------
@@ -67,7 +71,7 @@ H       = 3;               % number of harmonics to be considered
 N       = 2^10;             % sample points for the AFT (time discretisation)
 
 analysis = 'FRF';
-nn_id = select_model_id('../models');
+nn_id = select_model_id(models_dir);
 % Solve and continue w.r.t. Om  
 Om_s    = round(om_stick(imod)*.1);   % start frequency
 Om_e    = round(om_stick(imod)*1.5);  % end frequency    
@@ -133,4 +137,5 @@ Q_nl    = qrms_HB(i_ex,:)/len;
 
 T = table(freq_ratio(:), Q_stick(:), Q_free(:), Q_slip(:), Q_nl(:), Solinfo_HB.NIT(:), Solinfo_HB.FC(:), ...
           'VariableNames', {'freq_ratio','Q_stick','Q_free','Q_slip','Q_nl','NIT','FC'});  %%%%%
-writetable(T, sprintf('../data/nn_results_force%.0f_kt%.0f_muN%.0f.csv', force, kt, muN));
+outfile = fullfile(data_dir, sprintf('nn_results_force%.0f_kt%.0f_muN%.0f.csv', force, kt, muN));
+writetable(T, outfile);
